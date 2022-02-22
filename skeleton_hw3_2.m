@@ -70,17 +70,18 @@ while (converged==0)
     end
     %% CODE - Mean Updating - Update the cluster means
     % Write code below here:
-    MU_previous = MU_current
-    label1 = DATA(find(labels == 1),:);
-    MU_current(1,:) = mean(label1);
-    label2 = DATA(find(labels == 2),:);
-    MU_current(2,:) = mean(label2);
-    label3 = DATA(find(labels == 3),:);
-    MU_current(3,:) = mean(label3)
+    MU_previous = MU_current;
+    
+    for(i = 1:K) %loop through each label
+        label = DATA(find(labels == i),:); %find all data points with that label 
+        MU_current(i,:) = mean(label); %find mean of data points with label and update current mu
+    end
 
     %% CODE 4 - Check for convergence 
     % Write code below here:
     
+    %check if the change between the previous mu and the current mu is smaller than the threshhold, if it is k-means has converged
+    %check if no points map to one of mu, if so k-means has converged
     if (sum(sum(abs(MU_previous - MU_current) < convergence_threshold)) || sum(sum(isnan(MU_current))))
         converged=1;
     end
