@@ -24,6 +24,7 @@ data3 =  mu3' + randn(points,2)*sigma3;
 % data2 = mvnrnd(mu2, sigma2, points);
 % data3 = mvnrnd(mu3, sigma3, points);
 
+figure()
 scatter(data1(:,1), data1(:,2), 'r');
 hold on
 scatter(data2(:,1), data2(:,2), 'g');
@@ -43,7 +44,8 @@ hold off
 % Add code below
 
 K = 3;
-MU_init = [3 3; -4 -1; 2 -4];
+%MU_init = [3 3; -4 -1; 2 -4];
+MU_init = [-0.14 2.61; 3.15 -0.84; -3.28 -1.58];
 
 MU_previous = MU_init;
 MU_current = MU_init;
@@ -64,25 +66,26 @@ while (converged==0)
     % Write code below here:
     for(i = 1:length(DATA))
         dist = euclidean_distance(DATA(i,:),MU_current);
+        closest_label(dist, MU_cur)
         sort_dist = sort(dist);
-        closest_mu = MU_init(find(sort_dist(1,:) == dist), :);
-        label = find(closest_mu == MU_init);
+        closest_mu = MU_current(find(sort_dist(1,:) == dist), :);
+        label = find(closest_mu == MU_current);
         labels(i) = label(1);
     end
     %% CODE - Mean Updating - Update the cluster means
     % Write code below here:
-    MU_previous = MU_current;
+    MU_previous = MU_current
     label1 = DATA(find(labels == 1),:);
     MU_current(1,:) = mean(label1);
     label2 = DATA(find(labels == 2),:);
     MU_current(2,:) = mean(label2);
     label3 = DATA(find(labels == 3),:);
-    MU_current(3,:) = mean(label3);
+    MU_current(3,:) = mean(label3)
 
     %% CODE 4 - Check for convergence 
     % Write code below here:
     
-    if (abs(M) < convergence_threshold)
+    if (sum(sum(abs(MU_previous - MU_current) < convergence_threshold)) || sum(sum(isnan(MU_current))))
         converged=1;
     end
     
@@ -101,14 +104,34 @@ while (converged==0)
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 end
+
+data1 = DATA(find(labels == 1), :);
+data2 = DATA(find(labels == 2), :);
+data3 = DATA(find(labels == 3), :);
+
+figure()
+scatter(data1(:,1), data1(:,2), 'r');
+hold on
+scatter(data2(:,1), data2(:,2), 'g');
+scatter(data3(:,1), data3(:,2), 'b');
+scatter(MU_current(:,1),MU_current(:,2),'black*')
+title('Clusters produced by k-means')
+legend('1','2','3');
+hold off
 % 
 % 
 % 
+%returns euclidean distance of a singular point to each point in a matrix
 function distance = euclidean_distance(point, points)
-    distance = zeros(length(points),1);
+    distance = zeros(length(points),1); %initialize distance vector
     [r,c] = size(points);
-    for (i = 1:r) % loop through each point of the training data
-        %distance between two points
-        distance(i,1) = sqrt((point(1,1)-points(i,1))^2+(point(1,2)-points(i,2))^2);
+    for (i = 1:r) % loop through each point of the matrix of points
+        distance(i,1) = sqrt((point(1,1)-points(i,1))^2+(point(1,2)-points(i,2))^2); %distance between two points
     end
+end
+
+%returns the label of the closest point given a distance vector and matrix of points
+function label = closest_label(distance, points)
+    sort_dist = sort(distance); %sort the distance vector from smalllest to largest
+    close_point = points(find(sort_dist(1) == distance), :); %find the index of the smallest distance in the distance vector and find point that gives that distance
 end

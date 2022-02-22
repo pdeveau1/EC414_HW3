@@ -44,8 +44,8 @@ hold off
 % Add code below
 
 K = 3;
-%MU_init = [3 3; -4 -1; 2 -4];
-MU_init = [-0.14 2.61; 3.15 -0.84; -3.28 -1.58];
+MU_init = [3 3; -4 -1; 2 -4];
+%MU_init = [-0.14 2.61; 3.15 -0.84; -3.28 -1.58];
 
 MU_previous = MU_init;
 MU_current = MU_init;
@@ -65,11 +65,8 @@ while (converged==0)
     %% CODE - Assignment Step - Assign each data observation to the cluster with the nearest mean:
     % Write code below here:
     for(i = 1:length(DATA))
-        dist = euclidean_distance(DATA(i,:),MU_current);
-        sort_dist = sort(dist);
-        closest_mu = MU_current(find(sort_dist(1,:) == dist), :);
-        label = find(closest_mu == MU_current);
-        labels(i) = label(1);
+        dist = euclidean_distance(DATA(i,:),MU_current); %find euclidean distance of each data point to each mu
+        labels(i) = closest_label(dist, MU_current); %find the label of the closest mu       
     end
     %% CODE - Mean Updating - Update the cluster means
     % Write code below here:
@@ -120,11 +117,18 @@ hold off
 % 
 % 
 % 
+%returns euclidean distance of a singular point to each point in a matrix
 function distance = euclidean_distance(point, points)
-    distance = zeros(length(points),1);
+    distance = zeros(length(points),1); %initialize distance vector
     [r,c] = size(points);
-    for (i = 1:r) % loop through each point of the training data
-        %distance between two points
-        distance(i,1) = sqrt((point(1,1)-points(i,1))^2+(point(1,2)-points(i,2))^2);
+    for (i = 1:r) % loop through each point of the matrix of points
+        distance(i,1) = sqrt((point(1,1)-points(i,1))^2+(point(1,2)-points(i,2))^2); %distance between two points
     end
+end
+
+%returns the label of the closest point given a distance vector and matrix of points
+function label = closest_label(distance, points)
+    sort_dist = sort(distance); %sort the distance vector from smalllest to largest
+    close_point = points(find(sort_dist(1) == distance), :); %find the index of the smallest distance in the distance vector and find point that gives that distance
+    [tf, label] = ismember(close_point, points, 'rows'); %find row index of the closest mu, correlates to label
 end
