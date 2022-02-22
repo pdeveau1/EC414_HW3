@@ -76,7 +76,6 @@ while (converged==0)
         label = DATA(find(labels == i),:); %find all data points with that label 
         MU_current(i,:) = mean(label); %find mean of data points with label and update current mu
     end
-
     %% CODE 4 - Check for convergence 
     % Write code below here:
     
@@ -84,8 +83,7 @@ while (converged==0)
     %check if no points map to one of mu, if so k-means has converged
     if (sum(sum(abs(MU_previous - MU_current) < convergence_threshold)) || sum(sum(isnan(MU_current))))
         converged=1;
-    end
-    
+    end  
     %% CODE 5 - Plot clustering results if converged:
     % Write code below here:
     if (converged == 1)
@@ -96,7 +94,11 @@ while (converged==0)
         
         %% If converged, get WCSS metric
         % Add code below
-        
+        WCSS = 0;
+        for(i = 1:K) %loop through each label
+            dist = euclidean_distance(MU_current(i,:), DATA(find(labels == i),:)); %find all data points with that label
+            WCSS = WCSS + sum(dist.^2);
+        end
     end
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
