@@ -50,24 +50,33 @@ NBA = readmatrix("NBA_stats_2018_2019.xlsx");
 K = 3;
 DATA = [data1 ; data2; data3];
 
-%%(a)
+%% (a)
+K = 3;
+DATA = [data1 ; data2; data3];
+
 MU_init_a = [3 3; -4 -1; 2 -4];
 [MU_current_a, labels_a, WCSS_a] = k_means(K, MU_init_a, DATA);
 graph_clusters(DATA, labels_a, MU_current_a);
 
-%%(b)
+%% (b)
+K = 3;
+DATA = [data1 ; data2; data3];
+
 MU_init_b = [-0.14 2.61; 3.15 -0.84; -3.28 -1.58];
 [MU_current_b, labels_b, WCSS_b] = k_means(K, MU_init_b, DATA);
 graph_clusters(DATA, labels_b, MU_current_b);
 
-%%(c)
+%% (c)
 %We suggest choosing centers either 1) uniformly at random from the dataset or alternatively 2) uniformly distributed over a tight rectangular region encompassing the dataset.
+K = 3;
+DATA = [data1 ; data2; data3];
+
 size = length(DATA);
 WCSS_c = zeros(10,1);
 for(i = 1:10)
-    index = randi([1,size],1,3); %generate index for three random points from data set for mu
-    while(length(unique(index)) ~= 3) %if indices are not all unique keep generating indices
-        index = randi([1,size],1,3);
+    index = randi([1,size],1,K); %generate index for three random points from data set for mu
+    while(length(unique(index)) ~= K) %if indices are not all unique keep generating indices
+        index = randi([1,size],1,K);
     end
     c(i).MU_init = DATA(index, :); %get initial mu values from dataset using randomly generated indices
     [c(i).MU_current, c(i).labels, c(i).WCSS] = k_means(K, c(i).MU_init, DATA);
@@ -80,7 +89,9 @@ i = i(1); %if multiple mu values generate the smallest WCSS, choose the first on
 graph_clusters(DATA, c(i).labels, c(i).MU_current); %graph clusters of smallest WCSS
 
 
-%%(d)
+%% (d)
+DATA = [data1 ; data2; data3];
+
 size = length(DATA);
 WCSS_d = zeros(9,1);
 for(K = 2:10)
@@ -103,7 +114,7 @@ xlabel('k value')
 ylabel('WCSS')
 title('WCSS change with k-value')
 
-%%(e)
+%% (e)
 PPG = NBA(:,7);
 MPG = NBA(:,5);
 DATA = [MPG PPG];
@@ -148,7 +159,7 @@ title('k-means Clusters for NBA Data')
 legend({'1','2','3','4','5','6','7','8','9','10','mu'})
 hold off
 
-%%(f)
+%% (f)
 DATA = sample_circle(3);
 scatter(DATA(1:500, 1), DATA(1:500, 2))
 hold on
@@ -174,6 +185,10 @@ sort_WCSS = sort(WCSS_f); %sort WCSS from smallest value to largest value
 i = find(sort_WCSS(1) == WCSS_f); %find the index of the smallest WCSS
 i = ind(1); %if multiple mu values generate the smallest WCSS, choose the first one
 graph_clusters(DATA, f(i).labels, f(i).MU_current); %graph clusters of smallest WCSS
+
+
+
+%% Functions
 
 
 %returns euclidean distance of a singular point to each point in a matrix
