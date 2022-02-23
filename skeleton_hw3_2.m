@@ -39,6 +39,7 @@ hold off
 % Add code below:
 
 % HINT: readmatrix might be useful here
+NBA = readmatrix("NBA_stats_2018_2019.xlsx");
 
 % % Problem 3.2(f): Generate Concentric Rings Dataset using
 % % sample_circle.m provided to you in the HW 3 folder on Blackboard.
@@ -103,7 +104,49 @@ ylabel('WCSS')
 title('WCSS change with k-value')
 
 %%(e)
+PPG = NBA(:,7);
+MPG = NBA(:,5);
+DATA = [MPG PPG];
 
+%plot data
+figure()
+scatter(MPG, PPG);
+xlabel('Minutes Per Game')
+ylabel('Points Per Game')
+title('Points Per Game(PPG) versus Minutes Per Game(MPG)')
+
+%Apply your implementation of the k-means algorithm with k = 10 selecting the best of 10 different random initializations as the final outpu
+K = 10;
+size = length(DATA);
+WCSS_e = zeros(10,1);
+for(i = 1:10)
+    index = randi([1,size],1,K); %generate index for three random points from data set for mu
+    while(length(unique(index)) ~= K) %if indices are not all unique keep generating indices
+        index = randi([1,size],1,K);
+    end
+    e(i).MU_init = DATA(index, :); %get initial mu values from dataset using randomly generated indices
+    [e(i).MU_current, e(i).labels, e(i).WCSS] = k_means(K, e(i).MU_init, DATA);
+    %graph_clusters(DATA, c(i).labels, c(i).MU_current);
+    WCSS_e(i) = e(i).WCSS;
+end
+sort_WCSS = sort(WCSS_e); %sort WCSS from smallest value to largest value
+ind = find(sort_WCSS(1) == WCSS_e); %find the index of the smallest WCSS
+ind = ind(1); %if multiple mu values generate the smallest WCSS, choose the first one
+%graph_clusters(DATA, e(i).labels, e(i).MU_current); %graph clusters of smallest WCSS
+figure()
+data_i = DATA(find(e(ind).labels == 1), :);
+scatter(data_i(:,1), data_i(:,2)); %plot points with label 1
+hold on
+for(i = 2:10)
+    data_i = DATA(find(e(ind).labels == i), :);
+    scatter(data_i(:,1), data_i(:,2));
+end
+scatter(e(ind).MU_current(:,1),e(ind).MU_current(:,2),'black*')
+xlabel('Minutes Per Game')
+ylabel('Points Per Game')
+title('k-means Clusters for NBA Data')
+legend({'1','2','3','4','5','6','7','8','9','10','mu'})
+hold off
 
 
 
@@ -122,6 +165,7 @@ function label = closest_label(distance, points)
     sort_dist = sort(distance); %sort the distance vector from smalllest to largest
     close_point = points(find(sort_dist(1) == distance), :); %find the index of the smallest distance in the distance vector and find point that gives that distance
     [tf, label] = ismember(close_point, points, 'rows'); %find row index of the closest mu, correlates to label
+    label = label(1); %if there is a tie in the distance choose the first label
 end
 
 %creates a scatter plot of the clusters created and their mu values given the data points, label of those points, and mu values
@@ -137,7 +181,7 @@ function graph_clusters(data, labels, mu)
     scatter(data3(:,1), data3(:,2), 'b'); %plot points with label 3
     scatter(mu(:,1),mu(:,2),'black*'); %plot mu values
     title('Clusters produced by k-means')
-    legend('1','2','3');
+    legend('1','2','3','mu');
     hold off
 end
 
