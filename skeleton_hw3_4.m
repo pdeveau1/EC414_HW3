@@ -5,11 +5,41 @@ clear, clc, close all,
 
 %% Generate Gaussian data:
 % Add code below:
+mu1 = [2,2]';
+mu2 = [-2,2]';
+mu3 = [0, -3.25]';
 
+I2 = [1 0; 0 1];
+
+sigma1 = 0.02 * I2;
+sigma2 = 0.05 * I2;
+sigma3 = 0.07 * I2;
+
+points = 50;
+
+% data1 =  mu1' + randn(points,2)*sigma1;
+% data2 =  mu2' + randn(points,2)*sigma2;
+% data3 =  mu3' + randn(points,2)*sigma3;
+data1 = mvnrnd(mu1, sigma1, points);
+data2 = mvnrnd(mu2, sigma2, points);
+data3 = mvnrnd(mu3, sigma3, points);
+
+mu = [mu1'; mu2'; mu3'];
+figure()
+scatter(data1(:,1), data1(:,2), 'r');
+hold on
+scatter(data2(:,1), data2(:,2), 'g');
+scatter(data3(:,1), data3(:,2), 'b');
+scatter(mu(:,1),mu(:,2),'black*'); %plot mu values
+xlabel('x1')
+ylabel('x2')
+title('Gaussian data points')
+legend('1','2','3');
+hold off
 
 %% Generate NBA data:
 % Add code below:
-
+NBA = readmatrix("NBA_stats_2018_2019.xlsx");
 % HINT: readmatrix might be useful here
 
 %% DP Means method:
