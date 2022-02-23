@@ -120,7 +120,7 @@ K = 10;
 size = length(DATA);
 WCSS_e = zeros(10,1);
 for(i = 1:10)
-    index = randi([1,size],1,3); %generate index for three random points from data set for mu
+    index = randi([1,size],1,K); %generate index for three random points from data set for mu
     while(length(unique(index)) ~= K) %if indices are not all unique keep generating indices
         index = randi([1,size],1,K);
     end
@@ -134,20 +134,24 @@ ind = find(sort_WCSS(1) == WCSS_e); %find the index of the smallest WCSS
 ind = ind(1); %if multiple mu values generate the smallest WCSS, choose the first one
 %graph_clusters(DATA, e(i).labels, e(i).MU_current); %graph clusters of smallest WCSS
 figure()
-data_i = DATA(find(e(i).labels == 1), :);
+data_i = DATA(find(e(ind).labels == 1), :);
 scatter(data_i(:,1), data_i(:,2)); %plot points with label 1
 hold on
 for(i = 2:10)
-    data_i = DATA(find(e(i).labels == i), :);
+    data_i = DATA(find(e(ind).labels == i), :);
     scatter(data_i(:,1), data_i(:,2));
 end
-
+scatter(e(ind).MU_current(:,1),e(ind).MU_current(:,2),'black*')
 xlabel('Minutes Per Game')
 ylabel('Points Per Game')
 title('k-means Clusters for NBA Data')
+legend({'1','2','3','4','5','6','7','8','9','10','mu'})
 hold off
 
-
+%%(f)
+circle = sample_circle(3);
+circle1 = circle(1:500, )
+scatter(sample_circle(3))
 
 
 %returns euclidean distance of a singular point to each point in a matrix
@@ -180,7 +184,7 @@ function graph_clusters(data, labels, mu)
     scatter(data3(:,1), data3(:,2), 'b'); %plot points with label 3
     scatter(mu(:,1),mu(:,2),'black*'); %plot mu values
     title('Clusters produced by k-means')
-    legend('1','2','3');
+    legend('1','2','3','mu');
     hold off
 end
 

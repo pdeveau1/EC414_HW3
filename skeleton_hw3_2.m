@@ -148,7 +148,32 @@ title('k-means Clusters for NBA Data')
 legend({'1','2','3','4','5','6','7','8','9','10','mu'})
 hold off
 
+%%(f)
+DATA = sample_circle(3);
+scatter(DATA(1:500, 1), DATA(1:500, 2))
+hold on
+scatter(DATA(501:1000, 1), DATA(501:1000, 2))
+scatter(DATA(1001:1500, 1), DATA(1001:1500, 2))
+title('3 Concentric Rings')
+hold off
 
+K = 3;
+size = length(DATA);
+WCSS_f = zeros(10,1);
+for(i = 1:10)
+    index = randi([1,size],1,K); %generate index for three random points from data set for mu
+    while(length(unique(index)) ~= K) %if indices are not all unique keep generating indices
+        index = randi([1,size],1,K);
+    end
+    f(i).MU_init = DATA(index, :); %get initial mu values from dataset using randomly generated indices
+    [f(i).MU_current, f(i).labels, f(i).WCSS] = k_means(K, f(i).MU_init, DATA);
+    %graph_clusters(DATA, c(i).labels, c(i).MU_current);
+    WCSS_f(i) = f(i).WCSS;
+end
+sort_WCSS = sort(WCSS_f); %sort WCSS from smallest value to largest value
+i = find(sort_WCSS(1) == WCSS_f); %find the index of the smallest WCSS
+i = ind(1); %if multiple mu values generate the smallest WCSS, choose the first one
+graph_clusters(DATA, f(i).labels, f(i).MU_current); %graph clusters of smallest WCSS
 
 
 %returns euclidean distance of a singular point to each point in a matrix
