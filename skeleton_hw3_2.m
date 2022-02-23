@@ -114,6 +114,26 @@ xlabel('k value')
 ylabel('WCSS')
 title('WCSS change with k-value')
 
+%% 3.3
+%f(k, λ) = WCSSk−means + λk, where WCSSk−means
+%λ ∈ {15, 20, 25, 30}, plot f(k, λ) as a function of k for k ∈ Krange
+K = [2:10];
+lambda = [15 20 25 30];
+f = WCSS_d + 15.*K'
+figure()
+for i = 1:length(lambda);
+    f = WCSS_d + lambda(i).*K'
+    plot(K',f)
+    hold on
+end
+xlabel('k value')
+ylabel('WCSS-means + λk')
+legend('15','20','25','30')
+title(legend, 'λ')
+title('k-means WCSS + penalty λk')
+hold off
+%plot(K, WCSS_d + 15.*K)
+
 %% (e)
 PPG = NBA(:,7);
 MPG = NBA(:,5);
