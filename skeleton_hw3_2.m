@@ -31,6 +31,8 @@ hold on
 scatter(data2(:,1), data2(:,2), 'g');
 scatter(data3(:,1), data3(:,2), 'b');
 scatter(mu(:,1),mu(:,2),'black*'); %plot mu values
+xlabel('x1')
+ylabel('x2')
 title('Gaussian data points')
 legend('1','2','3');
 hold off
@@ -119,11 +121,10 @@ title('WCSS change with k-value')
 %λ ∈ {15, 20, 25, 30}, plot f(k, λ) as a function of k for k ∈ Krange
 K = [2:10];
 lambda = [15 20 25 30];
-f = WCSS_d + 15.*K'
 figure()
 for i = 1:length(lambda);
-    f = WCSS_d + lambda(i).*K'
-    plot(K',f)
+    fk = WCSS_d + lambda(i).*K';
+    plot(K',fk)
     hold on
 end
 xlabel('k value')
@@ -132,7 +133,6 @@ legend('15','20','25','30')
 title(legend, 'λ')
 title('k-means WCSS + penalty λk')
 hold off
-%plot(K, WCSS_d + 15.*K)
 
 %% (e)
 PPG = NBA(:,7);
@@ -240,8 +240,11 @@ function graph_clusters(data, labels, mu)
     scatter(data2(:,1), data2(:,2), 'g'); %plot points with label 2
     scatter(data3(:,1), data3(:,2), 'b'); %plot points with label 3
     scatter(mu(:,1),mu(:,2),'black*'); %plot mu values
+    xlabel('x1')
+    ylabel('x2')
     title('Clusters produced by k-means')
     legend('1','2','3','mu');
+    title(legend,'Class');
     hold off
 end
 
