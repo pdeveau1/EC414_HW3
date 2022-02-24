@@ -47,7 +47,7 @@ NBA = readmatrix("NBA_stats_2018_2019.xlsx");
 %% DP Means method:
 
 % Parameter Initializations
-LAMBDA = 20;
+LAMBDA = 0.15;
 convergence_threshold = 1;
 num_points = length(DATA);
 total_indices = [1:num_points];
@@ -87,7 +87,7 @@ while (converged == 0)
         % Write code below here:
         dist = euclidean_distance(DATA(i,:),MU);
         ind = find(min(dist) == dist);
-        Z(i) = Z(ind(1)); %if 2 points equidistant choose first index
+        Z(i) = ind(1); %if 2 points equidistant choose first index
         %% CODE 2 - Look at how the min distance of the cluster distance list compares to LAMBDA
         % Write code below here:
         if(min(dist) > LAMBDA)
@@ -105,7 +105,7 @@ while (converged == 0)
     %% CODE 4 - Recompute means per cluster
     % Write code below here:
     for i = 1:length(L)
-        MU(i) = mean(DATA(L{i}));
+        MU(i,:) = mean(DATA(L{i},:),1);
     end
     prev_MU = current_MU;
     current_MU = MU;
