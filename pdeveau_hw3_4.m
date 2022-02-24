@@ -17,12 +17,12 @@ sigma3 = 0.07 * I2;
 
 points = 50;
 
-data1 =  mu1' + randn(points,2)*sigma1;
-data2 =  mu2' + randn(points,2)*sigma2;
-data3 =  mu3' + randn(points,2)*sigma3;
-% data1 = mvnrnd(mu1, sigma1, points);
-% data2 = mvnrnd(mu2, sigma2, points);
-% data3 = mvnrnd(mu3, sigma3, points);
+% data1 =  mu1' + randn(points,2)*sigma1;
+% data2 =  mu2' + randn(points,2)*sigma2;
+% data3 =  mu3' + randn(points,2)*sigma3;
+data1 = mvnrnd(mu1, sigma1, points);
+data2 = mvnrnd(mu2, sigma2, points);
+data3 = mvnrnd(mu3, sigma3, points);
 
 DATA = [data1 ; data2; data3];
 
@@ -93,7 +93,7 @@ function DP_means(DATA, LAMBDA)
             Z(i) = ind(1); %if 2 points equidistant choose first index
             %% CODE 2 - Look at how the min distance of the cluster distance list compares to LAMBDA
             % Write code below here:
-            if(min(dist) > LAMBDA)
+            if(min(dist)^2 > LAMBDA)
                 K = K + 1;
                 Z(i) = K;
                 MU(K,:) = DATA(i,:);
@@ -108,7 +108,7 @@ function DP_means(DATA, LAMBDA)
         %% CODE 4 - Recompute means per cluster
         % Write code below here:
         for i = 1:K
-            MU(i,:) = mean(DATA(L{i},:),1)
+            MU(i,:) = mean(DATA(L{i},:),1);
         end
         prev_MU = current_MU;
         current_MU = MU;
@@ -124,6 +124,7 @@ function DP_means(DATA, LAMBDA)
         
         if (converged)
             MU(isnan(MU(:,1)),:) = [];
+            titl = sprintf('DP-means for λ = %f',LAMBDA);
             figure()
             hold on
             for i = 1:K
@@ -134,7 +135,9 @@ function DP_means(DATA, LAMBDA)
             scatter(MU(:,1),MU(:,2),'black*');
             xlabel('x1')
             ylabel('x2')
+            title(titl)
             legend
+            title(legend,'labels')
             hold off
             [K,c] = size(MU);
             %%%%

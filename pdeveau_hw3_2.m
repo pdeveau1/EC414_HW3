@@ -203,6 +203,7 @@ function distance = euclidean_distance(point, points)
     [r,c] = size(points);
     for (i = 1:r) % loop through each point of the matrix of points
         distance(i,1) = sqrt((point(1,1)-points(i,1))^2+(point(1,2)-points(i,2))^2); %distance between two points
+        %distance(i,1) = sqrt(point'*point + points(i,:)'*points(i,:) - 2*point'*points(i,:));
     end
 end
 
